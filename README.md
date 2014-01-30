@@ -47,6 +47,9 @@ return \Redirect::back()->withInput()->withErrors($e->getErrors());
 
 // For ajax request
 return $e->getErrors()->toJson();
+
+// $e stands for ValidationException witch (for now) only has one method
+// to return errors -> getErrors.
 ```
 
 ## Customize
