@@ -3,11 +3,15 @@
 This package throws ValidationException when validation error occur.
 And handles it by runing fallowing closures:
 
-  return \Redirect::back()->withInput()->withErrors($e->getErrors());
-  
-And for ajax request
+For 'regular' request
+```php
+return \Redirect::back()->withInput()->withErrors($e->getErrors());
+```
 
-  return $e->getErrors()->toJson();
+and for ajax request
+```php
+return $e->getErrors()->toJson();
+```
   
 ## Customize
 
