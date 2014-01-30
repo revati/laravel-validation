@@ -59,6 +59,11 @@ return \Response::json(array(
 
 ## Customize
 
-Those responses are defined as closures in packages config file, so just by publishing config file you can modify what your app should be doing in witch case.
+Those responses are defined as closures in package config file, so just by publishing package config you can modify what your app should be doing in witch case.
 
     php artisan config:publish revati/validation
+
+## TODO
+
+It is probably out of scope for this package, but planing to add simple js file for
+automating form submit + error showing on error response.
