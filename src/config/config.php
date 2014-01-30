@@ -17,7 +17,9 @@ return array(
 
     'response' => function(Revati\Validation\ValidationException $e)
     {
-        return \Redirect::back()->withInput()->withErrors($e->getErrors());
+        return \Redirect::back(400)
+            ->withInput()
+            ->withErrors($e->getErrors());
     },
 
     /*
@@ -31,7 +33,10 @@ return array(
 
     'ajaxResponse' => function(Revati\Validation\ValidationException $e)
     {
-        return $e->getErrors()->toJson();
+        return \Response::json(array(
+            'success' => false,
+            'errors' => $e->getErrors()->toJson()
+        ), 400);
     },
 
 );

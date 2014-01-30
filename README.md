@@ -43,10 +43,15 @@ If error occur, fallowing responses will be returned:
 
 ```php
 // For "regular" request
-return \Redirect::back()->withInput()->withErrors($e->getErrors());
+return \Redirect::back(400)
+    ->withInput()
+    ->withErrors($e->getErrors());
 
 // For ajax request
-return $e->getErrors()->toJson();
+return \Response::json(array(
+    'success' => false,
+    'errors' => $e->getErrors()->toJson()
+), 400);
 
 // $e stands for ValidationException witch (for now) only has one method
 // to return errors -> getErrors.
