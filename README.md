@@ -36,6 +36,20 @@ Validator::make($input, $rules);
 // If got to this point validation passed
 $user = User::create($input);
 
+// For validation only (without throwing exception)
+$validator = Validator::sotfMake($input, $rules);
+
+// To disable or enable exception throwing at runtime use fallowing methods:
+Validation::disable();
+Validation::enable();
+
+// To change response at runtime use fallowing
+Validation::setResponse($responseClosure, $ajaxResponseClosure);
+
+// Only one response
+Validation::setResponse($responseClosure);
+Validation::setResponse(null, $ajaxResponseClosure);
+
 // ...
 ```
 

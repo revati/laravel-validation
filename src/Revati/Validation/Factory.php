@@ -11,7 +11,8 @@ class Factory extends BaseFactory
      * @param  array  $data
      * @param  array  $rules
      * @param  array  $messages
-     * @return Boolean
+     * @param  array  $customAttributes
+     * @return Validator
      */
     public function make(array $data, array $rules, array $messages = array(), array $customAttributes = array())
     {
@@ -25,4 +26,55 @@ class Factory extends BaseFactory
         return $validator;
     }
 
+    /**
+     * Validate softly (without exception throwing)
+     *
+     * @param  array  $data
+     * @param  array  $rules
+     * @param  array  $messages
+     * @param  array  $customAttributes
+     * @return Validator
+     */
+    public function softMake(array $data, array $rules, array $messages = array(), array $customAttributes = array())
+    {
+        return parent::make($data, $rules, $messages, $customAttributes);
+    }
+
+    /**
+     * Enable exception throwing at runtime;
+     *
+     * @return void
+     */
+    public function enable()
+    {
+        Config::set('validation::throwException', false);
+    }
+
+    /**
+     * Disable exception throwing at runtime
+     *
+     * @return void
+     */
+    public function disable()
+    {
+        Config::set('validation::throwException', false);
+    }
+
+    /**
+     * Change response closuers at runtime
+     * @param closuer $response
+     * @param closure $ajaxResponse
+     */
+    public function setResponse( $response = null , $ajaxResponse = null )
+    {
+        if( !is_null($response) )
+        {
+            Config::set('validation::response', $response);
+        }
+
+        if( !is_null($ajaxResponse) )
+        {
+            Config::set('validation::ajaxResponse', $ajaxResponse);
+        }
+    }
 }
