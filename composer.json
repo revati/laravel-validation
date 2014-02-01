@@ -1,6 +1,7 @@
 {
     "name": "revati/laravel-validation",
-    "description": "",
+    "description": "Laravel validation extension for throwing ValidationException on error",
+    "keywords": ["validation", "laravel"],
     "authors": [
         {
             "name": "revati",

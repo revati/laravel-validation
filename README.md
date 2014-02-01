@@ -43,10 +43,10 @@ $validator = Validator::sotfMake($input, $rules);
 Validation::disable();
 Validation::enable();
 
-// To change response at runtime use fallowing
+// To change response at runtime use fallowing method
 Validation::setResponse($responseClosure, $ajaxResponseClosure);
 
-// Only one response
+// Change only one response
 Validation::setResponse($responseClosure);
 Validation::setResponse(null, $ajaxResponseClosure);
 
@@ -57,7 +57,7 @@ If error occur, fallowing responses will be returned:
 
 ```php
 // For "regular" request
-return \Redirect::back(400)
+return \Redirect::back()
     ->withInput()
     ->withErrors($e->getErrors());
 
