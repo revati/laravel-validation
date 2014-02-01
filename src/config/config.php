@@ -11,7 +11,7 @@ return array(
     |
     */
 
-    'throwException' => true;
+    'throwException' => true,
 
     /*
     |--------------------------------------------------------------------------
