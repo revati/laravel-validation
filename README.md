@@ -23,7 +23,7 @@ $resourceValidator->addModifier('date', 'afterDate', Input::get('startDate'));
 
 ## Installation
 
-Begin by installing this package through Composer. Edit your project's `composer.json` file to require `revati/routing`.
+Begin by installing this package through Composer. Edit your project's `composer.json` file to require `revati/validation`.
 
     "require": {
         "laravel/framework": "4.1.*",
