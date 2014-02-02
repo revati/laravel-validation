@@ -1,6 +1,25 @@
 # Exceptional Validation
 
-This package throws `ValidationException` when validation error occur.
+Validation support in two ways.
+
+- ValidationException throwing and configurable responses
+- BaseValidator abstract class with handy functionality
+
+## Possibilities
+
+- No need to worry about what happens if validation fails (ValidationException).
+- Can dynamicly assign modifiers to validation rules:
+```php
+// In ResourceValidator that extends Revati\Validation\BaseValidator
+$rules = [
+    'title' => 'required'
+    'endDate'  => 'after:[afterDate]'
+];
+
+$resourceValidator->addModifier('date', 'afterDate', Input::get('startDate'));
+
+// So [afterDate] will be replaced with 3th parameter
+```
 
 ## Installation
 
@@ -22,7 +41,44 @@ Once this operation completes, the final step is to add the service provider. Op
 
 That's it! You're all set to go.
 
-## Usage
+## BaseValidator
+
+- Create seperate Validator file for each Resource (should extend `Revati\Validation\BaseValidator`)
+- Set all rules that should be applied to Resource
+
+### Get specific rules
+
+- `getRules` method accepts one parameter (array) with list of all rules that should extracted from global $rules.
+
+```php
+// Will get only title rules
+$validator->getRules(array('title'));
+
+// Will get title rules and overwrite description rules
+$validator->getRules(array('title', 'description' => 'min:200'));
+```
+
+### Dynamic rules modifiers
+
+In url specify modifier hook like so: `[modifier]`.
+
+```php
+// Change hook value
+// Modifier should bee passed without square brackets
+$validator->addModifier('field', 'min', 20);
+
+// As field name can be passed `*` to search in all field rules.
+$validator->addModifier('*', 'max', 100);
+
+// Modifiers can be be grouped
+$validator->addModifier('field', 'min|max', 10);
+```
+
+## ValidationException
+
+Caution: By default exception throwing is enabled. So if you dont need it it can be disaled via packages config.
+
+    php artisan config:publish revati/validation
 
 Whatever where you want to validate something
 ```php

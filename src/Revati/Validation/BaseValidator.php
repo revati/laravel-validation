@@ -23,18 +23,18 @@ abstract class BaseValidator
     protected $errors;
 
     /**
-     * Unique id to exclude from unique validation rule
-     *
-     * @var int
-     */
-    protected $unique;
-
-    /**
-     * Store dynamic values that should be changed before validation
+     * Store modifiers for validation rules
      *
      * @var array
      */
     protected $modifiers = [];
+
+    /**
+     * Store global modifiers for validation rules
+     *
+     * @var array
+     */
+    protected $globalModifiers = [];
 
     /**
      * Validate data against rules
@@ -70,7 +70,22 @@ abstract class BaseValidator
      */
     public function addModifier($field, $modifier, $value = '')
     {
-        array_set($this->modifiers, $field . '.' . $modifier, $value);
+        $modifiers = explode('|', $modifier);
+
+        if($field === '*')
+        {
+            foreach($modifiers as $modifier)
+            {
+                array_set($this->globalModifiers, $modifier, $value);
+            }
+        }
+        else
+        {
+            foreach($modifiers as $mod)
+            {
+                array_set($this->modifiers, $field . '.' . $modifier, $value);
+            }
+        }
     }
 
     /**
@@ -81,31 +96,49 @@ abstract class BaseValidator
      */
     protected function updateDynamicRules($rules)
     {
-        foreach($this->modifiers as $field => $modifiers)
+        // Get global modifiers
+        list($globalPatterns, $globalReplaces) = $this->prepareModifiers($this->globalModifiers);
+
+        // Set normal modifiers
+        foreach($rules as $field => $rule)
         {
-            $patterns = [];
-            $replaces = [];
+            // Get field modifiers
+            $modifiers = array_get($this->modifiers, $field, array());
+            list($patterns, $replaces) = $this->prepareModifiers($modifiers);
 
-            foreach ($modifiers as $key => $value)
-            {
-                $patterns[] = '/\[('.$key.')\]/';
-                $replaces[] = $value;
-            }
+            // Merge global with local modifiers
+            $patterns = array_merge($globalPatterns, $patterns);
+            $replaces = array_merge($globalReplaces, $replaces);
 
+            // Should modifiers that will left over be removed or not?
+            // TODO: Answer to this important question.
+
+            // Replace modifiers
             $rules[$field] = preg_replace($patterns, $replaces, $rules[$field]);
-
         }
 
         return $rules;
     }
 
     /**
-     * Get validation rules
-     * @return type?
+     * Prepare modifiers for preg replace
+     * @param  array $modifiers Unprepared modifiers
+     * @return array            Prepared modifiers
      */
-    public function getErrors()
+    protected function prepareModifiers($modifiers)
     {
-        return $this->errors;
+        // Flip array (keys connot be used as reference)
+        $modifiers = array_flip($modifiers);
+
+        foreach($modifiers as $value => &$key)
+        {
+            $key = '/\[('.$key.')\]/';
+        }
+
+        // Flip agains
+        $modifiers = array_flip($modifiers);
+
+        return array_divide($modifiers);
     }
 
     /**
@@ -138,6 +171,15 @@ abstract class BaseValidator
         }
 
         return $this->rules;
+    }
+
+    /**
+     * Get validation errors
+     * @return type?
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
 }
